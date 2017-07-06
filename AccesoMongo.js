@@ -27,6 +27,36 @@ Qux.prototype.asignarUri = function (cadena){
 	uri = cadena;
 }
 
+//Obtener una consulta personalizada
+Qux.prototype.consultarDatos = function (error, info, callback) {
+	
+	//Se conecta a la BD y obtiene los datos
+	MongoClient.connect(info.uri, function(err, db) {
+
+		if (err){
+			//Ocurrió un error
+			if (error) error(err);
+		}else{
+		  	//Referenciar a la colección
+			var collection = db.collection(info.coleccion);
+
+			//Ejecutar un Find
+			collection.find(JSON.parse(info.filtros)).toArray(function(err, docs) {
+
+				if (err){
+					//Ocurrió un error
+					if (error) error(err);
+				}else{
+					//Retornar resultado de la consulta
+					if (callback) callback(docs);
+				}
+			});
+		}
+	});
+
+}
+
+
 //Devuelve el texto para la información del pié de página
 Qux.prototype.obtenerInfo = function (error, usarCache, admin, callback) {
 	

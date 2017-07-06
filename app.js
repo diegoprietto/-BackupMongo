@@ -34,8 +34,35 @@ app.set('view engine', 'pug');
 
 //INICIO Funciones AJAX**************************************************************************************
 
+app.post('/consultar', function(req, res){
 
+  var datos = req.body.content;
 
+  //Si hay datos, realizar consulta
+  if (datos){
+
+    //Proceso de actualización en BD
+    accesoMongo.consultarDatos(
+      function () {
+        console.log("guardarSolicitud: Error al intentar almacenar en BD");
+
+        //Enviar un flag de Error
+        respuestaAjaxJson(res, 'ERROR', 'Error al intentar realizar la consulta');
+      },
+      datos,
+      function (result) {
+
+        //Enviar un flag de éxito
+        respuestaAjaxJson(res, 'OK', 'null', result);
+      }
+    );
+
+  }else{
+    //Sin datos de entrada
+    respuestaAjaxJson(res, 'ERROR', 'No se recibió datos.');
+  }
+
+});
 
 
 //FIN Funciones AJAX**************************************************************************************
@@ -91,5 +118,27 @@ function getRandomInt(min, max) {
   return Math.floor(Math.random() * (max - min)) + min;
 }
 
+
+//Enviar mensajes Ajax al cliente en formato JSon
+/*
+  res: Objeto Response
+  tipoMsj: "ERROR", "OK", etc.
+  mensaje: (Opcional), texto a mostrar al usuario
+  contenido: (Opcional), respuesta de la consulta realizada, no se muestra al usuario
+*/
+function respuestaAjaxJson(res, tipoMsj, mensaje, contenido){
+  res.setHeader('Content-Type', 'application/json');
+
+  var datos = {
+    RESULTADO: tipoMsj
+  };
+
+  //Valores opcionales
+  if (mensaje) datos.MENSAJE = mensaje;
+  if (contenido) datos.CONTENIDO = contenido;
+
+  //Enviar respuesta
+  res.send(JSON.stringify( datos ));
+}
 
 //FIN Funciones Varias**************************************************************************************

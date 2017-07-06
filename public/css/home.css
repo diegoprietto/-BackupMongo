@@ -1,0 +1,5 @@
+/*Dejar espacio en los bordes laterales de la pantalla*/
+.espacioLateral{
+	padding-left: 15px;
+	padding-right: 15px;
+}
