@@ -13,6 +13,9 @@ app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
 var AccesoMongo = require('./AccesoMongo.js').Qux;
 var accesoMongo = new AccesoMongo();
 
+var ModuloArchivos = require('./ModuloArchivos.js').Qux;
+var moduloArchivos = new ModuloArchivos();
+
 
 //Definición de puerto
 app.set('port', (process.env.PORT || 5000));
@@ -27,7 +30,7 @@ app.set('view engine', 'pug');
 
 //INICIO Atributos **************************************************************************************
 
-
+var carpetaBackup = ".\\public\\Exportaciones\\"
 
 //FIN Atributos **************************************************************************************
 
@@ -39,12 +42,11 @@ app.post('/consultar', function(req, res){
   var datos = req.body.content;
 
   //Si hay datos, realizar consulta
-  if (datos){
+  if (datos && datos.archivo){
 
     //Proceso de actualización en BD
     accesoMongo.consultarDatos(
       function () {
-        console.log("guardarSolicitud: Error al intentar almacenar en BD");
 
         //Enviar un flag de Error
         respuestaAjaxJson(res, 'ERROR', 'Error al intentar realizar la consulta');
@@ -52,8 +54,20 @@ app.post('/consultar', function(req, res){
       datos,
       function (result) {
 
-        //Enviar un flag de éxito
-        respuestaAjaxJson(res, 'OK', 'null', result);
+        //Almacenar en archivo
+        moduloArchivos.almacenar(
+          () =>{
+            //Enviar un flag de Error
+            respuestaAjaxJson(res, 'ERROR', 'Error al intentar almacenar en archivo');
+          },
+          JSON.stringify(result),
+          carpetaBackup + datos.archivo,
+          () => {
+            //Enviar un flag de éxito
+            respuestaAjaxJson(res, 'OK', 'null', result);
+          }
+        );
+
       }
     );
 

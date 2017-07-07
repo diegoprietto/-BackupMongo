@@ -9,22 +9,22 @@ block VistaCuerpo
 		.form-group
 			label.col-sm-2.control-label(for='txUri') URI:
 			.col-sm-10
-				input#txUri.form-control(type='text', placeholder='URI')
+				input#txUri.form-control(type='text', placeholder='mongodb://...')
+		.form-group
+			label.col-sm-2.control-label(for='txColeccion') Colección:
+			.col-sm-10
+				input#txColeccion.form-control(type='text', placeholder='Colección')
 		.form-group
 			label.col-sm-2.control-label(for='txFiltro') Filtros:
 			.col-sm-10
-				input#txFiltro.form-control(type='text', placeholder='{}')
+				input#txFiltro.form-control(type='text', placeholder='{}', value='{}')
 		.form-group
 			label.col-sm-2.control-label(for='txArchivo') Nombre de archivo de salida:
 			.col-sm-10
-				input#txArchivo.form-control(type='text', placeholder='Resultado.txt')
+				input#txArchivo.form-control(type='text', placeholder='Resultado.txt', value='Resultado.txt')
 		.form-group
 			.col-sm-offset-2.col-sm-2
 				input#btConsultar.form-control.btn.btn-primary(type='button', value="Consultar", onclick="consultar()")
 
-	.espacioLateral
-		.alert.alert-warning.alert-dismissible(role='alert')
-			button.close(type='button', data-dismiss='alert', aria-label='Close')
-				span(aria-hidden='true') ×
-			strong Error
-			|  Se produjo un error en el servidor.
+	#contenedorAlertas.espacioLateral
+		//- Aquí se generan los distintos alerts para el usuario

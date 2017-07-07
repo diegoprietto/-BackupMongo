@@ -1,5 +1,7 @@
 "use strict";
 
+var idContenedorAlertas = "contenedorAlertas";
+
 $(document).ready(function () {
 	
 });
@@ -21,23 +23,34 @@ function consultar(){
 
 //Ajax Exitoso
 function consultarOk(response){
-	debugger;
-	alert("Exito");
+	if (response && response.RESULTADO && response.CONTENIDO && response.RESULTADO === "OK"){
+		//Mostrar msj de éxito
+		generarAlerta(idContenedorAlertas, tipoAlertas.ok, "Archivo creado.", "Éxito");
+
+	}else if (response && response.RESULTADO && response.MENSAJE && response.RESULTADO === "ERROR" ){
+		//Mostrar msj de error
+		generarAlerta(idContenedorAlertas, tipoAlertas.error, response.MENSAJE, "Error");
+	}else{
+		//Mostrar msj de error desconocido
+		generarAlerta(idContenedorAlertas, tipoAlertas.error, "Error desconocido.", "Error");
+	}
+
 }
 
 //Ajax Erroneo
 function consultarError(response){
-	alert("Error");
+	generarAlerta(idContenedorAlertas, tipoAlertas.error, "No se pudo conectar al servidor", "Error");
 }
 
 //Obtiene datos de los input para enviar al servidor
 function obtenerDatos(){
 	var estructura = {
 		uri: $("#txUri").val(),
-		coleccion: "Users",					/////AGREGAR!!!
+		coleccion: $("#txColeccion").val(),
 		filtros: $("#txFiltro").val(),
 		archivo: $("#txArchivo").val(),
 	}
 
 	return estructura;
 }
+
